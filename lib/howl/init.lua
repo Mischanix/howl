@@ -18,6 +18,7 @@ Where options can be any of:
 
 local path_separator = jit.os == 'Windows' and '\\' or '/'
 local path_prefix = jit.os == 'Windows' and '\\\\.\\' or ''
+app_root = path_prefix .. app_root
 
 local function parse_args(argv)
   local options = {
@@ -67,7 +68,7 @@ local function auto_module(name)
       if not status then
         if mod:match('module.*not found') then
           relative_path = req_name:gsub('%.', path_separator)
-          path = path_prefix .. table.concat({ app_root, 'lib', relative_path }, path_separator)
+          path = table.concat({ app_root, 'lib', relative_path }, path_separator)
           if ffi.C.g_file_test(path, ffi.C.G_FILE_TEST_IS_DIR) ~= 0 then
             mod = auto_module(req_name)
           else
